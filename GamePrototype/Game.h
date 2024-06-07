@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseGame.h"
+#include "Character.h"
 class Game : public BaseGame
 {
 public:
@@ -27,4 +28,8 @@ private:
 	void Initialize();
 	void Cleanup( );
 	void ClearBackground( ) const;
+
+	// datamembers
+	Rectf m_ViewPort{ GetViewPort().left, GetViewPort().bottom, GetViewPort().width, GetViewPort().height };
+	Character* m_Character;
 };

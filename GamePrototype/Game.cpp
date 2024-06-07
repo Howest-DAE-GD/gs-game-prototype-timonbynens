@@ -14,15 +14,17 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	
+	m_Character = new Character(m_ViewPort);
 }
 
 void Game::Cleanup( )
 {
+	delete m_Character;
 }
 
 void Game::Update( float elapsedSec )
 {
+	m_Character->Update(elapsedSec);
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 	//if ( pStates[SDL_SCANCODE_RIGHT] )
@@ -38,29 +40,84 @@ void Game::Update( float elapsedSec )
 void Game::Draw( ) const
 {
 	ClearBackground( );
+	//m_Character->DrawBoard();
+	m_Character->Draw();
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 {
-	//std::cout << "KEYDOWN event: " << e.keysym.sym << std::endl;
+	switch (e.keysym.sym)
+	{
+	case SDLK_a:
+		m_Character->SetDirection(Directions::left);
+		break;
+	case SDLK_d:
+		m_Character->SetDirection(Directions::right);
+		break;
+	case SDLK_w:
+		m_Character->SetDirection(Directions::up);
+		break;
+	case SDLK_s:
+		m_Character->SetDirection(Directions::down);
+		break;
+	case SDLK_RIGHT:
+		m_Character->SetDirection(Directions::right);
+		break;
+	case SDLK_LEFT:
+		m_Character->SetDirection(Directions::left);
+		break;
+	case SDLK_UP:
+		m_Character->SetDirection(Directions::up);
+		break;
+	case SDLK_DOWN:
+		m_Character->SetDirection(Directions::down);
+		break;
+	case SDLK_p:
+		if (m_Character->m_gamestate == gamestate::start)
+		{
+			m_Character->SetGamestate(gamestate::playing);
+		}
+		break;
+	case SDLK_r:
+		if (m_Character->m_gamestate == gamestate::died)
+		{
+			m_Character->SetGamestate(gamestate::newlvl);
+		}
+		break;
+	}
 }
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 {
-	//std::cout << "KEYUP event: " << e.keysym.sym << std::endl;
-	//switch ( e.keysym.sym )
-	//{
-	//case SDLK_LEFT:
-	//	//std::cout << "Left arrow key released\n";
-	//	break;
-	//case SDLK_RIGHT:
-	//	//std::cout << "`Right arrow key released\n";
-	//	break;
-	//case SDLK_1:
-	//case SDLK_KP_1:
-	//	//std::cout << "Key 1 released\n";
-	//	break;
-	//}
+	switch (e.keysym.sym)
+	{
+	case SDLK_a:
+		m_Character->SetDirection(Directions::stopped);
+		break;
+	case SDLK_d:
+		m_Character->SetDirection(Directions::stopped);
+		break;
+	case SDLK_w:
+		m_Character->SetDirection(Directions::stopped);
+		break;
+	case SDLK_s:
+		m_Character->SetDirection(Directions::stopped);
+		break;
+	case SDLK_RIGHT:
+		m_Character->SetDirection(Directions::stopped);
+		break;
+	case SDLK_LEFT:
+		m_Character->SetDirection(Directions::stopped);
+		break;
+	case SDLK_UP:
+		m_Character->SetDirection(Directions::stopped);
+		break;
+	case SDLK_DOWN:
+		m_Character->SetDirection(Directions::stopped);
+		break;
+	default:
+		break;
+	}
 }
 
 void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )
