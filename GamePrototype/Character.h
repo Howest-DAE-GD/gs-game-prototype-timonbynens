@@ -10,6 +10,10 @@ enum Directions
 	right,
 	up,
 	down,
+	leftup,
+	leftdown,
+	rightup,
+	rightdown,
 	stopped
 };
 enum DirectionsSquare
@@ -41,8 +45,11 @@ public:
 	void Draw();
 	//void DrawBoard();
 	void SetDirection(Directions direction);
+	void RemoveDirection(Directions direction);
 	void SetGamestate(gamestate spelstatus);
 	gamestate		m_gamestate{ start };
+
+
 
 private:
 	//void MakeBoard();
@@ -62,6 +69,7 @@ private:
 	Rectf		m_CollisionBox{ Rectf{m_location.x,m_location.y,50,50} };
 	Rectf		m_CollisionBoxPrinces{ m_LocationPrinces.x,m_LocationPrinces.y,40,40 };
 	Rectf		m_Character{ Rectf{0,0,25,25} };
+	Point2f		m_SquareMovingToYou{ Point2f{} };
 	Texture*	m_startTexture{};
 	Texture*	m_diedTexture{};
 	Texture*	m_scoreTexture{};

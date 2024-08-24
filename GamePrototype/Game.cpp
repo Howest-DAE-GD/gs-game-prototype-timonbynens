@@ -26,15 +26,6 @@ void Game::Update( float elapsedSec )
 {
 	m_Character->Update(elapsedSec);
 	// Check keyboard state
-	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
-	//if ( pStates[SDL_SCANCODE_RIGHT] )
-	//{
-	//	std::cout << "Right arrow key is down\n";
-	//}
-	//if ( pStates[SDL_SCANCODE_LEFT] && pStates[SDL_SCANCODE_UP])
-	//{
-	//	std::cout << "Left and up arrow keys are down\n";
-	//}
 }
 
 void Game::Draw( ) const
@@ -46,6 +37,7 @@ void Game::Draw( ) const
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 {
+	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 	switch (e.keysym.sym)
 	{
 	case SDLK_a:
@@ -85,6 +77,22 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 		}
 		break;
 	}
+	if (pStates[SDL_SCANCODE_LEFT] && pStates[SDL_SCANCODE_UP])
+	{
+		m_Character->SetDirection(Directions::leftup);
+	}
+	else if (pStates[SDL_SCANCODE_RIGHT] && pStates[SDL_SCANCODE_UP])
+	{
+		m_Character->SetDirection(Directions::rightup);
+	}
+	else if (pStates[SDL_SCANCODE_RIGHT] && pStates[SDL_SCANCODE_DOWN])
+	{
+		m_Character->SetDirection(Directions::rightdown);
+	}
+	else if (pStates[SDL_SCANCODE_LEFT] && pStates[SDL_SCANCODE_DOWN])
+	{
+		m_Character->SetDirection(Directions::leftdown);
+	}
 }
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
@@ -92,28 +100,28 @@ void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 	switch (e.keysym.sym)
 	{
 	case SDLK_a:
-		m_Character->SetDirection(Directions::stopped);
-		break;
-	case SDLK_d:
-		m_Character->SetDirection(Directions::stopped);
-		break;
-	case SDLK_w:
-		m_Character->SetDirection(Directions::stopped);
-		break;
-	case SDLK_s:
-		m_Character->SetDirection(Directions::stopped);
-		break;
-	case SDLK_RIGHT:
-		m_Character->SetDirection(Directions::stopped);
-		break;
-	case SDLK_LEFT:
-		m_Character->SetDirection(Directions::stopped);
-		break;
-	case SDLK_UP:
-		m_Character->SetDirection(Directions::stopped);
-		break;
-	case SDLK_DOWN:
-		m_Character->SetDirection(Directions::stopped);
+		m_Character->RemoveDirection(Directions::left);
+		break;		 
+	case SDLK_d:	 
+		m_Character->RemoveDirection(Directions::right);
+		break;		 
+	case SDLK_w:	 
+		m_Character->RemoveDirection(Directions::up);
+		break;		 
+	case SDLK_s:	 
+		m_Character->RemoveDirection(Directions::down);
+		break;		 
+	case SDLK_RIGHT: 
+		m_Character->RemoveDirection(Directions::right);
+		break;		 
+	case SDLK_LEFT:	 
+		m_Character->RemoveDirection(Directions::left);
+		break;		 
+	case SDLK_UP:	 
+		m_Character->RemoveDirection(Directions::up);
+		break;		 
+	case SDLK_DOWN:	 
+		m_Character->RemoveDirection(Directions::down);
 		break;
 	default:
 		break;

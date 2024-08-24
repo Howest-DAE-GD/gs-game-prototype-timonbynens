@@ -54,6 +54,22 @@ void Character::Update(float elapsedSec)
 	}
 	else if (m_gamestate == gamestate::playing)
 	{
+		if (m_SquareMovingToYou.y - m_location.y > 0)
+		{
+			--m_SquareMovingToYou.y;
+		}
+		else
+		{
+			++m_SquareMovingToYou.y;
+		}
+		if (m_SquareMovingToYou.x - m_location.x > 0)
+		{
+			--m_SquareMovingToYou.x;
+		}
+		else
+		{
+			++m_SquareMovingToYou.x;
+		}
 		m_timecalculator += elapsedSec;
 		m_elapsedSeconds += elapsedSec;
 		UpdateCollisionPoints();
@@ -86,6 +102,34 @@ void Character::Update(float elapsedSec)
 				m_location.y -= m_charactrspeed;
 			}
 			break;
+		case Directions::leftup:
+			if (!m_LeftOffScreen)
+			{
+				m_location.x -= m_charactrspeed / 2 + 1;
+				m_location.y += m_charactrspeed / 2 + 1;
+			}									    
+			break;								    
+		case Directions::rightup:				    
+			if (!m_RightOffScreen)				    
+			{									    
+				m_location.x += m_charactrspeed / 2 + 1;
+				m_location.y += m_charactrspeed / 2 + 1;
+			}									   
+			break;								   
+		case Directions::leftdown:				   
+			if (!m_TopOffScreen)				   
+			{									   
+				m_location.x -= m_charactrspeed / 2 + 1;
+				m_location.y -= m_charactrspeed / 2 + 1;
+			}									 
+			break;								 
+		case Directions::rightdown:				 
+			if (!m_BottomOffScreen)				 
+			{									 
+				m_location.x += m_charactrspeed / 2 + 1;
+				m_location.y -= m_charactrspeed / 2 + 1;
+			}									   
+			break;
 		default:
 			break;
 		}
@@ -109,20 +153,20 @@ void Character::Update(float elapsedSec)
 				m_squars[index].y -= m_squareSpeed;
 				break;
 			case Supleft:
-				m_squars[index].x -= m_squareSpeed;
-				m_squars[index].y += m_squareSpeed;
+				m_squars[index].x -= m_squareSpeed -1;
+				m_squars[index].y += m_squareSpeed - 1;
 				break;
 			case Supright:
-				m_squars[index].x += m_squareSpeed;
-				m_squars[index].y += m_squareSpeed;
+				m_squars[index].x += m_squareSpeed -1;
+				m_squars[index].y += m_squareSpeed -1;
 				break;
 			case Sdownleft:
-				m_squars[index].x -= m_squareSpeed;
-				m_squars[index].y -= m_squareSpeed;
+				m_squars[index].x -= m_squareSpeed -1;
+				m_squars[index].y -= m_squareSpeed -1;
 				break;
 			case Sdownright:
-				m_squars[index].x += m_squareSpeed;
-				m_squars[index].y -= m_squareSpeed;
+				m_squars[index].x += m_squareSpeed -1;
+				m_squars[index].y -= m_squareSpeed -1;
 				break;
 			case Sstopped:
 				break;
@@ -180,6 +224,11 @@ void Character::Draw()
 		for (int index = 0; index < m_squars.size(); index++)
 		{
 			FillRect(m_squars[index].x, m_squars[index].y, m_Character.width + 5, m_Character.height + 5);
+		}
+		if (m_squars.size() > 6)
+		{
+			utils::SetColor(Color4f(1.f, 0.5f, 0.1f, 1.f));
+			FillRect(m_SquareMovingToYou.x, m_SquareMovingToYou.y, m_Character.width + 5, m_Character.height + 5);
 		}
 		utils::SetColor(Color4f(0.f, 1.f, 1.0f, 1.f));
 		FillRect(m_CollisionBoxPrinces);
@@ -239,6 +288,74 @@ void Character::Draw()
 void Character::SetDirection(Directions direction)
 {
 	m_Direction = direction;
+}
+
+void Character::RemoveDirection(Directions direction)
+{
+	if (m_Direction == Directions::left && direction == Directions::left)
+	{
+		m_Direction = Directions::stopped;
+	}
+	else if (m_Direction == Directions::right && direction == Directions::right)
+	{
+		m_Direction = Directions::stopped;
+	}
+	else if (m_Direction == Directions::up && direction == Directions::up)
+	{
+		m_Direction = Directions::stopped;
+	}
+	else if (m_Direction == Directions::down && direction == Directions::down)
+	{
+		m_Direction = Directions::stopped;
+	}
+	else if (m_Direction == Directions::leftup)
+	{
+		if (direction == Directions::left)
+		{
+			m_Direction = Directions::up;
+		}
+		else if (direction == Directions::up)
+		{
+			m_Direction = Directions::left;
+		}
+	}
+	else if (m_Direction == Directions::leftdown)
+	{
+		if (direction == Directions::left)
+		{
+			m_Direction = Directions::down;
+		}
+		else if (direction == Directions::down)
+		{
+			m_Direction = Directions::left;
+		}
+	}
+	else if (m_Direction == Directions::rightup)
+	{
+		if (direction == Directions::right)
+		{
+			m_Direction = Directions::up;
+		}
+		else if (direction == Directions::up)
+		{
+			m_Direction = Directions::right;
+		}
+	}
+	else if (m_Direction == Directions::rightdown)
+	{
+		if (direction == Directions::down)
+		{
+			m_Direction = Directions::right;
+		}
+		else if (direction == Directions::right)
+		{
+			m_Direction = Directions::down;
+		}
+	}
+	else
+	{
+		m_Direction = Directions::stopped;
+	}
 }
 
 void Character::SetGamestate(gamestate spelstatus)
@@ -386,7 +503,7 @@ void Character::CollisionWithPrinces()
 	if (IsOverlapping(m_CollisionBox, m_CollisionBoxPrinces))
 	{
 		m_gamestate = gamestate::newlvl;
-		if (m_amountofsquares < 8)
+		if (m_amountofsquares < 7)
 		{
 			m_amountofsquares++;
 		}
@@ -408,12 +525,21 @@ void Character::CollisionWithSquares()
 			m_location = Point2f{ 225,225 };
 			m_elapsedSeconds = 0;
 		}
-		if (m_lives == 0)
+	}
+	if (m_squars.size() > 6)
+	{
+		if (IsOverlapping(m_CollisionBox, Rectf{ m_SquareMovingToYou.x, m_SquareMovingToYou.y, m_Character.width + 5, m_Character.height + 5 }) && m_elapsedSeconds > 1)
 		{
-			m_gamestate = gamestate::died;
+			m_lives--;
+			m_charactrspeed--;
+			m_location = Point2f{ 225,225 };
+			m_elapsedSeconds = 0;
 		}
 	}
-
+	if (m_lives == 0)
+	{
+		m_gamestate = gamestate::died;
+	}
 
 }
 void Character::UpdateCollisionPoints()
@@ -455,9 +581,9 @@ void Character::Makelvl()
 		m_LocationPrinces.x = m_ViewPort.width - m_CollisionBoxPrinces.width;
 		m_LocationPrinces.y = m_ViewPort.height - m_CollisionBoxPrinces.height;;
 	}
-	if (m_amountofsquares > 3)
+	if (m_amountofsquares > 2)
 	{
-		m_squareSpeed += 0.5f;
+		m_squareSpeed += 0.2f;
 	}
 	for (int index = 0; index < m_amountofsquares; index++)
 	{
@@ -502,6 +628,25 @@ void Character::Makelvl()
 			m_gamestate = gamestate::playing;
 		}
 	}
+	if (m_amountofsquares > 7)
+	{
+		if (m_LocationPrinces.x > 250 && m_LocationPrinces.y < 250)
+		{
+			m_SquareMovingToYou = Point2f{ 0,490 };
+		}
+		else if (m_LocationPrinces.x < 250 && m_LocationPrinces.y < 250)
+		{
+			m_SquareMovingToYou = Point2f{ 490,490 };
+		}
+		else if (m_LocationPrinces.x > 250 && m_LocationPrinces.y > 250)
+		{
+			m_SquareMovingToYou = Point2f{ 0,0 };
+		}
+		else if (m_LocationPrinces.x < 250 && m_LocationPrinces.y > 250)
+		{
+			m_SquareMovingToYou = Point2f{ 490,0 };
+		}
+	}
 }
 
 void Character::ResetAll()
@@ -514,4 +659,5 @@ void Character::ResetAll()
 	m_score = 0;
 	m_lives = 3;
 	m_charactrspeed = 5;
+	m_SquareMovingToYou = Point2f{0,0};
 }
