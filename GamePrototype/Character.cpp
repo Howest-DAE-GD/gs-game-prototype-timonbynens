@@ -54,21 +54,24 @@ void Character::Update(float elapsedSec)
 	}
 	else if (m_gamestate == gamestate::playing)
 	{
-		if (m_SquareMovingToYou.y - m_location.y > 0)
+		if (m_squars.size() > 5)
 		{
-			--m_SquareMovingToYou.y;
-		}
-		else
-		{
-			++m_SquareMovingToYou.y;
-		}
-		if (m_SquareMovingToYou.x - m_location.x > 0)
-		{
-			--m_SquareMovingToYou.x;
-		}
-		else
-		{
-			++m_SquareMovingToYou.x;
+			if (m_SquareMovingToYou.y - m_location.y > 0)
+			{
+				--m_SquareMovingToYou.y;
+			}
+			else
+			{
+				++m_SquareMovingToYou.y;
+			}
+			if (m_SquareMovingToYou.x - m_location.x > 0)
+			{
+				--m_SquareMovingToYou.x;
+			}
+			else
+			{
+				++m_SquareMovingToYou.x;
+			}
 		}
 		m_timecalculator += elapsedSec;
 		m_elapsedSeconds += elapsedSec;
@@ -106,29 +109,41 @@ void Character::Update(float elapsedSec)
 			if (!m_LeftOffScreen)
 			{
 				m_location.x -= m_charactrspeed / 2 + 1;
+			}		
+			if (!m_TopOffScreen)
+			{
 				m_location.y += m_charactrspeed / 2 + 1;
-			}									    
+			}
 			break;								    
 		case Directions::rightup:				    
-			if (!m_RightOffScreen)				    
-			{									    
+			if (!m_RightOffScreen)
+			{
 				m_location.x += m_charactrspeed / 2 + 1;
+			}	
+			if (!m_TopOffScreen)
+			{
 				m_location.y += m_charactrspeed / 2 + 1;
-			}									   
+			}
 			break;								   
 		case Directions::leftdown:				   
-			if (!m_TopOffScreen)				   
-			{									   
+			if (!m_LeftOffScreen)
+			{
 				m_location.x -= m_charactrspeed / 2 + 1;
+			}	
+			if (m_BottomOffScreen)
+			{
 				m_location.y -= m_charactrspeed / 2 + 1;
-			}									 
+			}
 			break;								 
 		case Directions::rightdown:				 
-			if (!m_BottomOffScreen)				 
-			{									 
+			if (!m_RightOffScreen)				 
+			{
 				m_location.x += m_charactrspeed / 2 + 1;
+			}
+			if (!m_BottomOffScreen)
+			{
 				m_location.y -= m_charactrspeed / 2 + 1;
-			}									   
+			}
 			break;
 		default:
 			break;
@@ -153,20 +168,58 @@ void Character::Update(float elapsedSec)
 				m_squars[index].y -= m_squareSpeed;
 				break;
 			case Supleft:
-				m_squars[index].x -= m_squareSpeed -1;
-				m_squars[index].y += m_squareSpeed - 1;
+				m_squars[index].x -= m_squareSpeed;
+				m_squars[index].y += m_squareSpeed;
 				break;
 			case Supright:
-				m_squars[index].x += m_squareSpeed -1;
-				m_squars[index].y += m_squareSpeed -1;
+				m_squars[index].x += m_squareSpeed;
+				m_squars[index].y += m_squareSpeed;
 				break;
 			case Sdownleft:
-				m_squars[index].x -= m_squareSpeed -1;
-				m_squars[index].y -= m_squareSpeed -1;
+				m_squars[index].x -= m_squareSpeed;
+				m_squars[index].y -= m_squareSpeed;
 				break;
 			case Sdownright:
-				m_squars[index].x += m_squareSpeed -1;
-				m_squars[index].y -= m_squareSpeed -1;
+				m_squars[index].x += m_squareSpeed;
+				m_squars[index].y -= m_squareSpeed;
+				break;
+			case Sstopped:
+				break;
+			default:
+				break;
+			}
+		}
+		if (m_UpdateGreen == true)
+		{
+			switch (m_GreenSquareDirection)
+			{
+			case Sleft:
+				m_GreenSquare.x -= m_squareSpeed;
+				break;
+			case Sright:
+				m_GreenSquare.x += m_squareSpeed;
+				break;
+			case Sup:
+				m_GreenSquare.y += m_squareSpeed;
+				break;
+			case Sdown:
+				m_GreenSquare.y -= m_squareSpeed;
+				break;
+			case Supleft:
+				m_GreenSquare.x -= m_squareSpeed;
+				m_GreenSquare.y += m_squareSpeed;
+				break;
+			case Supright:
+				m_GreenSquare.x += m_squareSpeed;
+				m_GreenSquare.y += m_squareSpeed;
+				break;
+			case Sdownleft:
+				m_GreenSquare.x -= m_squareSpeed;
+				m_GreenSquare.y -= m_squareSpeed;
+				break;
+			case Sdownright:
+				m_GreenSquare.x += m_squareSpeed;
+				m_GreenSquare.y -= m_squareSpeed;
 				break;
 			case Sstopped:
 				break;
@@ -225,10 +278,15 @@ void Character::Draw()
 		{
 			FillRect(m_squars[index].x, m_squars[index].y, m_Character.width + 5, m_Character.height + 5);
 		}
-		if (m_squars.size() > 6)
+		if (m_squars.size() > 5)
 		{
 			utils::SetColor(Color4f(1.f, 0.5f, 0.1f, 1.f));
 			FillRect(m_SquareMovingToYou.x, m_SquareMovingToYou.y, m_Character.width + 5, m_Character.height + 5);
+		}
+		if (m_UpdateGreen == true)
+		{
+			utils::SetColor(Color4f(0.004f, 0.7f, 0.080f, 1.f));
+			FillRect(m_GreenSquare.x, m_GreenSquare.y, m_Character.width + 5, m_Character.height + 5);
 		}
 		utils::SetColor(Color4f(0.f, 1.f, 1.0f, 1.f));
 		FillRect(m_CollisionBoxPrinces);
@@ -437,7 +495,7 @@ void Character::ChekOutOfBounds()
 		{
 			if (m_squarsDirections[index] == DirectionsSquare::Supleft)
 			{
-				m_squarsDirections[index] = DirectionsSquare::Supright;
+m_squarsDirections[index] = DirectionsSquare::Supright;
 			}
 			else if (m_squarsDirections[index] == DirectionsSquare::Sdownleft)
 			{
@@ -496,14 +554,73 @@ void Character::ChekOutOfBounds()
 
 
 	}
-
+	if (m_GreenSquare.x <= 0)
+	{
+		if (m_GreenSquareDirection == DirectionsSquare::Supleft)
+		{
+			m_GreenSquareDirection = DirectionsSquare::Supright;
+		}
+		else if (m_GreenSquareDirection == DirectionsSquare::Sdownleft)
+		{
+			m_GreenSquareDirection = DirectionsSquare::Sdownright;
+		}
+		else if (m_GreenSquareDirection == DirectionsSquare::Sleft)
+		{
+			m_GreenSquareDirection = DirectionsSquare::Sright;
+		}
+	}
+	if (m_GreenSquare.x + m_Character.width + 5 >= m_ViewPort.width)
+	{
+		if (m_GreenSquareDirection == DirectionsSquare::Supright)
+		{
+			m_GreenSquareDirection = DirectionsSquare::Supleft;
+		}
+		else if (m_GreenSquareDirection == DirectionsSquare::Sdownright)
+		{
+			m_GreenSquareDirection = DirectionsSquare::Sdownleft;
+		}
+		else if (m_GreenSquareDirection == DirectionsSquare::Sright)
+		{
+			m_GreenSquareDirection = DirectionsSquare::Sleft;
+		}
+	}
+	if (m_GreenSquare.y <= 0)
+	{
+		if (m_GreenSquareDirection == DirectionsSquare::Sdownright)
+		{
+			m_GreenSquareDirection = DirectionsSquare::Supright;
+		}
+		else if (m_GreenSquareDirection == DirectionsSquare::Sdownleft)
+		{
+			m_GreenSquareDirection = DirectionsSquare::Supleft;
+		}
+		else if (m_GreenSquareDirection == DirectionsSquare::Sdown)
+		{
+			m_GreenSquareDirection = DirectionsSquare::Sup;
+		}
+	}
+	if (m_GreenSquare.y + m_Character.height + 5 >= m_ViewPort.height)
+	{
+		if (m_GreenSquareDirection == DirectionsSquare::Supright)
+		{
+			m_GreenSquareDirection = DirectionsSquare::Sdownright;
+		}
+		else if (m_GreenSquareDirection == DirectionsSquare::Supleft)
+		{
+			m_GreenSquareDirection = DirectionsSquare::Sdownleft;
+		}
+		else if (m_GreenSquareDirection == DirectionsSquare::Sup)
+		{
+			m_GreenSquareDirection = DirectionsSquare::Sdown;
+		}
+	}
 }
 void Character::CollisionWithPrinces()
 {
 	if (IsOverlapping(m_CollisionBox, m_CollisionBoxPrinces))
 	{
 		m_gamestate = gamestate::newlvl;
-		if (m_amountofsquares < 7)
+		if (m_amountofsquares < 6)
 		{
 			m_amountofsquares++;
 		}
@@ -518,7 +635,7 @@ void Character::CollisionWithSquares()
 {
 	for (int index = 0; index < m_squars.size(); index++)
 	{
-		if (IsOverlapping(m_CollisionBox, Rectf{ m_squars[index].x, m_squars[index].y, m_Character.width + 5, m_Character.height + 5}) && m_elapsedSeconds > 1)
+		if (IsOverlapping(m_CollisionBox, Rectf{ m_squars[index].x, m_squars[index].y, m_Character.width + 5, m_Character.height + 5 }) && m_elapsedSeconds > 1)
 		{
 			m_lives--;
 			m_charactrspeed--;
@@ -534,6 +651,15 @@ void Character::CollisionWithSquares()
 			m_charactrspeed--;
 			m_location = Point2f{ 225,225 };
 			m_elapsedSeconds = 0;
+		}
+	}
+	if(m_UpdateGreen == true)
+	{
+		if (IsOverlapping(m_CollisionBox, Rectf{ m_GreenSquare.x, m_GreenSquare.y, m_Character.width + 5, m_Character.height + 5 }) && m_elapsedSeconds > 1)
+		{
+			m_lives++;
+			m_charactrspeed++;
+			m_UpdateGreen = false;
 		}
 	}
 	if (m_lives == 0)
@@ -587,10 +713,10 @@ void Character::Makelvl()
 	}
 	for (int index = 0; index < m_amountofsquares; index++)
 	{
-		float random1 = rand() % int(m_ViewPort.width);
-		float random2 = rand() % int(m_ViewPort.height);
+		float random1 = rand() % int(m_ViewPort.width - m_Character.width - 5);
+		float random2 = rand() % int(m_ViewPort.height - m_Character.height - 5);
 		m_squars.push_back(Point2f{ random1, random2 });
-		random3 = rand() % 7;
+		float random3 = rand() % 7;
 		if (random3 == 0.f)
 		{
 			m_squarsDirections.push_back(DirectionsSquare::Sleft);
@@ -628,23 +754,52 @@ void Character::Makelvl()
 			m_gamestate = gamestate::playing;
 		}
 	}
-	if (m_amountofsquares > 7)
+	if (m_amountofsquares > 5)
 	{
 		if (m_LocationPrinces.x > 250 && m_LocationPrinces.y < 250)
 		{
-			m_SquareMovingToYou = Point2f{ 0,490 };
+			m_SquareMovingToYou = Point2f{ 100,400 };
 		}
 		else if (m_LocationPrinces.x < 250 && m_LocationPrinces.y < 250)
 		{
-			m_SquareMovingToYou = Point2f{ 490,490 };
+			m_SquareMovingToYou = Point2f{ 400,400 };
 		}
 		else if (m_LocationPrinces.x > 250 && m_LocationPrinces.y > 250)
 		{
-			m_SquareMovingToYou = Point2f{ 0,0 };
+			m_SquareMovingToYou = Point2f{ 100,100 };
 		}
 		else if (m_LocationPrinces.x < 250 && m_LocationPrinces.y > 250)
 		{
-			m_SquareMovingToYou = Point2f{ 490,0 };
+			m_SquareMovingToYou = Point2f{ 400,100 };
+		}
+	}
+	if (m_lives < 3)
+	{
+		float random4 = /*rand() %*/ 1;
+		if (random4 == 1)
+		{
+			if (m_LocationPrinces.x > 250 && m_LocationPrinces.y < 250)
+			{
+				m_GreenSquare = Point2f{ 0,390 };
+			}
+			else if (m_LocationPrinces.x < 250 && m_LocationPrinces.y < 250)
+			{
+				m_GreenSquare = Point2f{ 290,490 };
+			}
+			else if (m_LocationPrinces.x > 250 && m_LocationPrinces.y > 250)
+			{
+				m_GreenSquare = Point2f{ 210,80 };
+			}
+			else if (m_LocationPrinces.x < 250 && m_LocationPrinces.y > 250)
+			{
+				m_GreenSquare = Point2f{ 90,0 };
+			}
+			m_UpdateGreen = true;
+			m_GreenSquareDirection = DirectionsSquare::Sdownleft;
+		}
+		else
+		{
+			m_UpdateGreen = false;
 		}
 	}
 }
@@ -660,4 +815,5 @@ void Character::ResetAll()
 	m_lives = 3;
 	m_charactrspeed = 5;
 	m_SquareMovingToYou = Point2f{0,0};
+	m_GreenSquare = Point2f{ 0,0 };
 }
