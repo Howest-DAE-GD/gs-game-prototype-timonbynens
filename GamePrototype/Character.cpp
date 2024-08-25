@@ -704,7 +704,7 @@ void Character::Makelvl()
 	m_SquaresSize.clear();
 	m_SquaresSpeed.clear();
 	utils::SetColor(Color4f(1.f, 1.f, 0.f, 1.f));
-	FillRect(10,10,10,10);
+	FillRect(10, 10, 10, 10);
 	int random = rand() % 3 + 1;
 	if (random == 1)
 	{
@@ -713,7 +713,7 @@ void Character::Makelvl()
 	}
 	else if (random == 2)
 	{
-		m_LocationPrinces.x = m_ViewPort.width -m_CollisionBoxPrinces.width;
+		m_LocationPrinces.x = m_ViewPort.width - m_CollisionBoxPrinces.width;
 		m_LocationPrinces.y = 0;
 	}
 	else if (random == 3)
@@ -841,33 +841,73 @@ void Character::Makelvl()
 			m_gamestate = gamestate::playing;
 		}
 	}
-		float random5 = rand() % 5;
-		if (random5 == 1)
+	float random5 = rand() % 5;
+	if (m_score > 11)
+	{
+		m_UpdateCoin = true;
+		if (m_LocationPrinces.x > 250 && m_LocationPrinces.y < 250)
 		{
-			m_UpdateCoin = true;
-			m_UpdateMovingSquare = false;
+			m_Coin = Point2f{ 100,400 };
+		}
+		else if (m_LocationPrinces.x < 250 && m_LocationPrinces.y < 250)
+		{
+			m_Coin = Point2f{ 400,400 };
+		}
+		else if (m_LocationPrinces.x > 250 && m_LocationPrinces.y > 250)
+		{
+			m_Coin = Point2f{ 100,100 };
+		}
+		else if (m_LocationPrinces.x < 250 && m_LocationPrinces.y > 250)
+		{
+			m_Coin = Point2f{ 400,100 };
+		}
+		if (m_amountofsquares > 5)
+		{
 			if (m_LocationPrinces.x > 250 && m_LocationPrinces.y < 250)
 			{
-				m_Coin = Point2f{ 100,400 };
+				m_SquareMovingToYou = Point2f{ 100,400 };
 			}
 			else if (m_LocationPrinces.x < 250 && m_LocationPrinces.y < 250)
 			{
-				m_Coin = Point2f{ 400,400 };
+				m_SquareMovingToYou = Point2f{ 400,400 };
 			}
 			else if (m_LocationPrinces.x > 250 && m_LocationPrinces.y > 250)
 			{
-				m_Coin = Point2f{ 100,100 };
+				m_SquareMovingToYou = Point2f{ 100,100 };
 			}
 			else if (m_LocationPrinces.x < 250 && m_LocationPrinces.y > 250)
 			{
-				m_Coin = Point2f{ 400,100 };
+				m_SquareMovingToYou = Point2f{ 400,100 };
 			}
+			m_UpdateMovingSquare = true;
 		}
-		else
+	}
+	else if (random5 == 1)
+	{
+		m_UpdateCoin = true;
+		m_UpdateMovingSquare = false;
+		if (m_LocationPrinces.x > 250 && m_LocationPrinces.y < 250)
 		{
-			m_UpdateCoin = false;
-			if (m_amountofsquares > 5)
-			{
+			m_Coin = Point2f{ 100,400 };
+		}
+		else if (m_LocationPrinces.x < 250 && m_LocationPrinces.y < 250)
+		{
+			m_Coin = Point2f{ 400,400 };
+		}
+		else if (m_LocationPrinces.x > 250 && m_LocationPrinces.y > 250)
+		{
+			m_Coin = Point2f{ 100,100 };
+		}
+		else if (m_LocationPrinces.x < 250 && m_LocationPrinces.y > 250)
+		{
+			m_Coin = Point2f{ 400,100 };
+		}	
+	}
+	else
+	{
+		m_UpdateCoin = false;
+		if (m_amountofsquares > 5)
+		{
 			if (m_LocationPrinces.x > 250 && m_LocationPrinces.y < 250)
 			{
 				m_SquareMovingToYou = Point2f{ 100,400 };
@@ -917,6 +957,7 @@ void Character::Makelvl()
 		}
 	}
 }
+
 
 void Character::ResetAll()
 {
