@@ -58,19 +58,19 @@ void Character::Update(float elapsedSec)
 		{
 			if (m_SquareMovingToYou.y - m_location.y > 0)
 			{
-				m_SquareMovingToYou.y -= 2;
+				m_SquareMovingToYou.y -= 1.2;
 			}
 			else
 			{
-				m_SquareMovingToYou.y += 2;
+				m_SquareMovingToYou.y += 1.2;
 			}
 			if (m_SquareMovingToYou.x - m_location.x > 0)
 			{
-				m_SquareMovingToYou.x -= 2;
+				m_SquareMovingToYou.x -= 1.2;
 			}
 			else
 			{
-				m_SquareMovingToYou.x += 2;
+				m_SquareMovingToYou.x += 1.2;
 			}
 		}
 		m_timecalculator += elapsedSec;
