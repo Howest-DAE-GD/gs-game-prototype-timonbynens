@@ -71,6 +71,7 @@ private:
 	Rectf				m_Character{ Rectf{0,0,25,25} };
 	Point2f				m_SquareMovingToYou{ Point2f{} };
 	Point2f				m_GreenSquare{ Point2f{} };
+	Point2f				m_Coin{ Point2f{} };
 	Texture*			m_startTexture{};
 	Texture*			m_diedTexture{};
 	Texture*			m_scoreTexture{};
@@ -97,6 +98,8 @@ private:
 	//std::vector<std::vector<Rectf>> m_VectorOfSquares{};
 	std::vector<Point2f> m_squars{};
 	std::vector<DirectionsSquare> m_squarsDirections{};
+	std::vector<float>	 m_SquaresSize{ 0 };
+	std::vector<float>	 m_SquaresSpeed{ 0 };
 	float				m_amountofsquares{1};
 	float				m_squareSpeed{1};
 
@@ -108,5 +111,7 @@ private:
 	bool				m_TopOffScreen{ false };
 
 	bool				m_UpdateGreen{ false };
+	bool				m_UpdateCoin{ false };
+	bool				m_UpdateMovingSquare{ false };
 };
 
